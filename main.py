@@ -11,6 +11,13 @@ import time
 import threading
 import logging
 
+# Load dependencies installed by setup.sh before importing the application
+# modules that depend on Flask and Requests.
+LOCAL_PACKAGES = os.path.join(os.path.dirname(os.path.abspath(__file__)),
+                              '.python-packages')
+if os.path.isdir(LOCAL_PACKAGES) and LOCAL_PACKAGES not in sys.path:
+    sys.path.insert(0, LOCAL_PACKAGES)
+
 # Configure logging before any local imports so all modules inherit the format.
 logging.basicConfig(
     level=logging.INFO,
