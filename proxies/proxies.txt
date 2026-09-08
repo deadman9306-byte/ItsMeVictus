@@ -1,0 +1,6 @@
+# Zorzer Proxy List — one proxy per line
+# Supported formats:
+#   socks5://host:port
+#   socks5://user:pass@host:port
+#   host:port
+#   host:port:user:pass

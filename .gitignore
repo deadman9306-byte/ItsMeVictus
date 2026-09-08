@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.env
+.venv
+venv/
+
+# Zorzer — never commit real credentials
+# Fill in config.py with your own values after cloning
+Zorzer_L4/proxies/proxies.txt
+
+# Replit
+.replit
+replit.nix
+.local/
+attached_assets/
