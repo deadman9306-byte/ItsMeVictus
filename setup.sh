@@ -26,39 +26,27 @@ fi
 PY=$(python3 --version)
 echo -e "${GREEN}✓ $PY${NC}"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-PYTHON_BIN="$(command -v python3)"
+VENV_DIR="$SCRIPT_DIR/.venv"
+PYTHON_BIN="$VENV_DIR/bin/python"
 
-# ── 2. System Python check ─────────────────────────────────────────────────────
-echo -e "${YELLOW}[2/5] Preparing system Python...${NC}"
-if [ -z "$PYTHON_BIN" ]; then
-    echo -e "${RED}✗ Could not locate python3.${NC}"
+# ── 2. Virtual environment check ───────────────────────────────────────────────
+echo -e "${YELLOW}[2/5] Preparing project virtual environment...${NC}"
+if [ ! -x "$PYTHON_BIN" ]; then
+    echo "  Creating $VENV_DIR"
+    python3 -m venv "$VENV_DIR"
+fi
+if [ ! -x "$PYTHON_BIN" ]; then
+    echo -e "${RED}✗ Could not create a project virtual environment.${NC}"
     exit 1
 fi
-echo -e "${GREEN}✓ system Python ready${NC}"
+echo -e "${GREEN}✓ project Python ready${NC}"
 
 # ── 3. Install dependencies ───────────────────────────────────────────────────
 echo -e "${YELLOW}[3/5] Installing dependencies...${NC}"
-# Replit's uv installer targets the project-level Python environment used by
-# python3. This keeps `python3 main.py` working without activating a venv.
-if command -v uv &>/dev/null; then
-    if ! uv pip install --system --python "$PYTHON_BIN" \
-        -r "$SCRIPT_DIR/requirements.txt" --quiet; then
-        echo -e "${RED}✗ Dependency installation failed.${NC}"
-        exit 1
-    fi
-elif "$PYTHON_BIN" -m pip --version &>/dev/null; then
-    # Fallback for environments that provide pip but not uv.
-    if ! PIP_USER=0 "$PYTHON_BIN" -m pip install --no-user \
-        -r "$SCRIPT_DIR/requirements.txt" --quiet; then
-        echo -e "${RED}✗ Dependency installation failed.${NC}"
-        exit 1
-    fi
-else
-    echo -e "${RED}✗ Neither uv nor pip is available for system Python.${NC}"
-    exit 1
-fi
-if ! "$PYTHON_BIN" -c 'import flask, flask_cors, requests' &>/dev/null; then
-    echo -e "${RED}✗ Dependencies are not importable from system Python.${NC}"
+# Replit may provide a global pip setting that forces --user installs. That
+# setting is invalid inside a virtual environment, so explicitly override it.
+if ! PIP_USER=0 "$PYTHON_BIN" -m pip install --no-user -r "$SCRIPT_DIR/requirements.txt" --quiet; then
+    echo -e "${RED}✗ Dependency installation failed.${NC}"
     exit 1
 fi
 echo -e "${GREEN}✓ flask, flask-cors, requests installed${NC}"
@@ -96,9 +84,9 @@ echo "======================================================================"
 echo -e "${GREEN}  ✅  Setup complete!${NC}"
 echo ""
 echo "  Start the API:"
-echo "    python3 $SCRIPT_DIR/main.py"
+echo "    $VENV_DIR/bin/python $SCRIPT_DIR/main.py"
 echo ""
-echo "  Or from inside the ItsMeVictus folder:"
-echo "    python3 main.py"
+echo "  Or from inside the Zorzer_L4 folder:"
+echo "    .venv/bin/python main.py"
 echo "======================================================================"
 echo ""
