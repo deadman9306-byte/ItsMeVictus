@@ -40,23 +40,22 @@ echo -e "${GREEN}✓ system Python ready${NC}"
 # ── 3. Install dependencies ───────────────────────────────────────────────────
 echo -e "${YELLOW}[3/5] Installing dependencies...${NC}"
 # Install into a project-local package directory so the app can use plain
-# `python3` without modifying Replit's immutable Nix interpreter.
-if command -v uv &>/dev/null; then
-    if ! uv pip install --target "$PYTHON_PACKAGES_DIR" \
-        -r "$SCRIPT_DIR/requirements.txt" --quiet; then
-        echo -e "${RED}✗ Dependency installation failed.${NC}"
-        exit 1
-    fi
-elif "$PYTHON_BIN" -m pip --version &>/dev/null; then
-    # Fallback for environments that provide pip but not uv.
-    if ! PIP_USER=0 "$PYTHON_BIN" -m pip install --target \
-        "$PYTHON_PACKAGES_DIR" \
-        -r "$SCRIPT_DIR/requirements.txt" --quiet; then
-        echo -e "${RED}✗ Dependency installation failed.${NC}"
-        exit 1
-    fi
-else
-    echo -e "${RED}✗ Neither uv nor pip is available for system Python.${NC}"
+# `python3` without modifying Replit's immutable Nix interpreter. A temporary
+# virtual environment supplies pip on fresh Repls where neither uv nor pip is
+# available from the system interpreter.
+BOOTSTRAP_VENV="$(mktemp -d "${TMPDIR:-/tmp}/itsmevictus-setup.XXXXXX")"
+cleanup_bootstrap() {
+    rm -rf "$BOOTSTRAP_VENV"
+}
+trap cleanup_bootstrap EXIT
+
+if ! "$PYTHON_BIN" -m venv "$BOOTSTRAP_VENV"; then
+    echo -e "${RED}✗ Could not create a temporary installer environment.${NC}"
+    exit 1
+fi
+if ! "$BOOTSTRAP_VENV/bin/python" -m pip install --target \
+    "$PYTHON_PACKAGES_DIR" -r "$SCRIPT_DIR/requirements.txt" --upgrade --quiet; then
+    echo -e "${RED}✗ Dependency installation failed.${NC}"
     exit 1
 fi
 if ! PYTHONPATH="$PYTHON_PACKAGES_DIR${PYTHONPATH:+:$PYTHONPATH}" \
