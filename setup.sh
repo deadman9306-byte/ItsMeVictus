@@ -43,7 +43,9 @@ echo -e "${GREEN}✓ project Python ready${NC}"
 
 # ── 3. Install dependencies ───────────────────────────────────────────────────
 echo -e "${YELLOW}[3/5] Installing dependencies...${NC}"
-if ! "$PYTHON_BIN" -m pip install -r "$SCRIPT_DIR/requirements.txt" --quiet; then
+# Replit may provide a global pip setting that forces --user installs. That
+# setting is invalid inside a virtual environment, so explicitly override it.
+if ! PIP_USER=0 "$PYTHON_BIN" -m pip install --no-user -r "$SCRIPT_DIR/requirements.txt" --quiet; then
     echo -e "${RED}✗ Dependency installation failed.${NC}"
     exit 1
 fi
