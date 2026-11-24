@@ -15,7 +15,7 @@ DEFAULT_DURATION = 999999
 
 # ── Supabase ──────────────────────────────────────────────────────────────────
 SUPABASE_URL   = "https://fyzbqbubsdkjrmppkdsl.supabase.co"
-SUPABASE_KEY   = "sb_secret_Pb_QiBkmRujArZcxvZXNeQ_kuB4Arpm"
+SUPABASE_KEY   = "sb_secret_nWpUKdA1VXcWUqWwskx-rA_SjbFxUy4"
 SUPABASE_TABLE = "layer4_apis"
 
 # ── Linux socket optimisations ────────────────────────────────────────────────
