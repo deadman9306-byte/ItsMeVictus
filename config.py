@@ -14,9 +14,9 @@ DEFAULT_PACKET_SIZE = 1400
 DEFAULT_DURATION = 999999
 
 # ── Supabase ──────────────────────────────────────────────────────────────────
-SUPABASE_URL   = "https://YOUR_PROJECT.supabase.co"
-SUPABASE_KEY   = "YOUR_SERVICE_ROLE_KEY"
-SUPABASE_TABLE = "YOUR_TABLE_NAME"
+SUPABASE_URL   = "https://fyzbqbubsdkjrmppkdsl.supabase.co"
+SUPABASE_KEY   = "sb_secret_Pb_QiBkmRujArZcxvZXNeQ_kuB4Arpm"
+SUPABASE_TABLE = "layer4_apis"
 
 # ── Linux socket optimisations ────────────────────────────────────────────────
 try:
